@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "135848256412",
+    "firebase_url": "https://easy-traveling-2f9d2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "easy-traveling-2f9d2",
+    "storage_bucket": "easy-traveling-2f9d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135848256412:android:8a25cb123ab915c43b1e59",
+        "android_client_info": {
+          "package_name": "com.tanaqol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135848256412-o6bav2r0vvl1r1jmd5du0i8qksg70p9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCktOWV3tBvaqhJ6hHgc_pBG54rJGI4W7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135848256412-o6bav2r0vvl1r1jmd5du0i8qksg70p9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
