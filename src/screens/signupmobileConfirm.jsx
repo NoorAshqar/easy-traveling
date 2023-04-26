@@ -12,23 +12,39 @@ import ReactFlagsSelect from "react-flags-select";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 
-// Initialize Firebase
-const SignUpMobile = () => {
-  const [number, onChangeNumber] = React.useState('');
-  const [select, setSelect] = React.useState("SE");
-  const phoneSignUp = () => {
-    console.log("sending");
-    const fullnumber = '+970' + number;
-    auth()
-      .signInWithPhoneNumber(fullnumber)
-      .then(confirmResult => {
-        // Confirmation result is returned by the Firebase server.
-        navigation.navigate('signupmobileConfirm',{number:number})
-        console.log(confirmResult);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+const signupmobileConfirm = ({ route, navigation }) => {
+  async function sendVerificationCode() {
+    const verificationId = await firebase.auth().signInWithPhoneNumber(route.number);
+    // save the verification ID to use later
+    setVerificationId(verificationId);
+  }
+
+  const handleVerifyCode = () => {
+    // Request for OTP verification
+    const { confirmResult, verificationCode } = this.state
+    if (verificationCode.length == 6) {
+      confirmResult
+        .confirm(verificationCode)
+        .then(user => {
+          this.setState({ userId: user.uid })
+          alert(`Verified! ${user.uid}`)
+        })
+        .catch(error => {
+          alert(error.message)
+          console.log(error)
+        })
+    } else {
+      alert('Please enter a 6 digit OTP code.')
+    }
+  }
+
+  async function signInWithVerificationCode() {
+    const credential = firebase.auth.PhoneAuthProvider.credential(
+      verificationId,
+      verificationCode
+    );
+    await firebase.auth().signInWithCredential(credential);
+    // user is now signed in
   }
   return (
     <View style={styles.container}>
@@ -38,13 +54,13 @@ const SignUpMobile = () => {
           style={styles.input}
           onChangeText={onChangeNumber}
           value={number}
-          placeholder="12345 67890"
-          maxLength={10}
+          placeholder="123 456"
+          maxLength={6}
           keyboardType="numeric" />
       </View>
       <TouchableOpacity
         style={styles.mainButton}
-        onPress={phoneSignUp}
+        onPress={handleVerifyCode}
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
@@ -100,4 +116,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default SignUpMobile;
+export default signupmobileConfirm;

@@ -10,6 +10,9 @@ import type { PropsWithChildren } from 'react';
 import Landing from './src/screens/landing';
 import SignUpMobile from './src/screens/signupmobile';
 import SignUpEmail from './src/screens/signupemail';
+import signupmobileConfirm from './src/screens/signupmobileConfirm';
+import Unauthorized from './src/components/Unauthorized';
+import BottomTabNavigator from './src/components/BottomTabNavigator';
 
 
 
@@ -31,7 +34,6 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 
 type SectionProps = PropsWithChildren<{
@@ -40,8 +42,7 @@ type SectionProps = PropsWithChildren<{
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const Stack = createStackNavigator();
-
+  const [isAuthorized, setIsAuthorized] = React.useState(false);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -49,55 +50,13 @@ function App(): JSX.Element {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Main" component={Landing} options={{ headerShown: false }} />
-        <Stack.Screen
-            name="SignUpM" 
-            component={SignUpMobile} 
-            options={{ 
-              title:"Sign Up",
-              headerStyle: {
-                backgroundColor: 'black',
-              },
-              headerTintColor: 'white',
-              }} />
-        <Stack.Screen
-            name="SignUpE" 
-            component={SignUpEmail} 
-            options={{ 
-              title:"Sign Up",
-              headerStyle: {
-                backgroundColor: 'black',
-              },
-              headerTintColor: 'white', }} />
-        <Stack.Screen
-            name="Account" 
-            component={SignUpEmail} 
-            options={{ 
-              title:"Sign Up",
-              headerStyle: {
-                backgroundColor: 'black',
-              },
-              headerTintColor: 'white', }} />
-        <Stack.Screen
-            name="SignUpName" 
-            component={SignUpEmail} 
-            options={{ 
-              title:"Sign Up",
-              headerStyle: {
-                backgroundColor: 'black',
-              },
-              headerTintColor: 'white', }} />
-        <Stack.Screen
-            name="MapScreen" 
-            component={SignUpEmail} 
-            options={{ 
-              title:"",
-              headerStyle: {
-                backgroundColor: 'black',
-              },
-              headerTintColor: 'white', }} />
-      </Stack.Navigator>
+      {
+        isAuthorized ? (
+          <BottomTabNavigator />
+        ) : (
+          <Unauthorized />
+        )
+      }
     </NavigationContainer>
   );
 }
