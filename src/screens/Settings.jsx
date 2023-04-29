@@ -3,8 +3,20 @@ import { View, Text } from 'react-native';
 
 function Settings() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home Screen</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image
+          style={{
+            width: '100%',
+            height: 450,
+          }}
+          source={require("../img/taxi.png")}
+        />
+        <View style={styles.header}>
+          <Text style={styles.name}>Noor Ashqar</Text>
+          <Text style={styles.phoneNumber}>0598489898</Text>
+        </View>
+      </View>
     </View>
   );
 }
