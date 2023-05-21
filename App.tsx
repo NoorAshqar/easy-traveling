@@ -13,6 +13,7 @@ import SignUpEmail from './src/screens/signupemail';
 import signupmobileConfirm from './src/screens/signupmobileConfirm';
 import Unauthorized from './src/components/Unauthorized';
 import BottomTabNavigator from './src/components/BottomTabNavigator';
+import auth from '@react-native-firebase/auth';
 
 
 
@@ -42,8 +43,16 @@ type SectionProps = PropsWithChildren<{
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const [isAuthorized, setIsAuthorized] = React.useState(true);
-
+  const [user, setUser] = React.useState(null);
+  React.useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged((user:any) => {
+      setUser(user);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+  
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -51,7 +60,7 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       {
-        isAuthorized ? (
+        user ? (
           <BottomTabNavigator />
         ) : (
           <Unauthorized />

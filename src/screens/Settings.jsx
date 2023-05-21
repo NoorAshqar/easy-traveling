@@ -1,22 +1,18 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Button, View } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 function Settings() {
+  const handleSignOut = async () => {
+    try {
+      await auth().signOut();
+    } catch (error) {
+      console.log('Error signing out:', error);
+    }
+  };
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          style={{
-            width: '100%',
-            height: 450,
-          }}
-          source={require("../img/taxi.png")}
-        />
-        <View style={styles.header}>
-          <Text style={styles.name}>Noor Ashqar</Text>
-          <Text style={styles.phoneNumber}>0598489898</Text>
-        </View>
-      </View>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Sign Out" onPress={handleSignOut} />
     </View>
   );
 }

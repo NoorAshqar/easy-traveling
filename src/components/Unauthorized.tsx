@@ -9,8 +9,8 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 import Landing from '../screens/landing';
 import SignUpMobile from '../screens/signupmobile';
-import SignUpEmail from '../screens/signupemail';
-import signupmobileConfirm from '../screens/signupmobileConfirm';
+import BottomTabNavigator from '../components/BottomTabNavigator';
+import DriverEditScreen from '../screens/DriverEditScreen';
 
 
 import {
@@ -47,59 +47,39 @@ function Unauthorized(): JSX.Element {
   };
 
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="Main" component={Landing} options={{ headerShown: false }} />
-        <Stack.Screen
-          name="SignUpM"
-          component={SignUpMobile}
-          options={{
-            title: "Sign Up",
-            headerStyle: {
-              backgroundColor: 'black',
-            },
-            headerTintColor: 'white',
-          }} />
-        <Stack.Screen
-          name="SignUpE"
-          component={SignUpEmail}
-          options={{
-            title: "Sign Up",
-            headerStyle: {
-              backgroundColor: 'black',
-            },
-            headerTintColor: 'white',
-          }} />
-        <Stack.Screen
-          name="Account"
-          component={SignUpEmail}
-          options={{
-            title: "Sign Up",
-            headerStyle: {
-              backgroundColor: 'black',
-            },
-            headerTintColor: 'white',
-          }} />
-        <Stack.Screen
-          name="SignUpName"
-          component={SignUpEmail}
-          options={{
-            title: "Sign Up",
-            headerStyle: {
-              backgroundColor: 'black',
-            },
-            headerTintColor: 'white',
-          }} />
-        <Stack.Screen
-          name="MapScreen"
-          component={SignUpEmail}
-          options={{
-            title: "",
-            headerStyle: {
-              backgroundColor: 'black',
-            },
-            headerTintColor: 'white',
-          }} />
-      </Stack.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen name="Main" component={Landing} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="SignUpM"
+        component={SignUpMobile}
+        options={{
+          title: "Sign Up",
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+        }} />
+      <Stack.Screen
+        name="BottomTabNavigator"
+        component={BottomTabNavigator}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+        }} />
+      <Stack.Screen
+        name="DriverEditScreen"
+        component={DriverEditScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+        }} />
+    </Stack.Navigator>
   );
 }
 

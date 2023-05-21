@@ -1,53 +1,143 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import ReactFlagsSelect from "react-flags-select";
-
-// Import the functions you need from the SDKs you need+
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import firestore from '@react-native-firebase/firestore';
 
 
-// Initialize Firebase
 const SignUpMobile = () => {
   const [number, onChangeNumber] = React.useState('');
-  const [select, setSelect] = React.useState("SE");
-  const phoneSignUp = () => {
-    console.log("sending");
+  const [verificationCode, setVerificationCode] = React.useState('');
+  const [confirmResult, setConfirmResult] = React.useState(null);
+  const [firstName, setFirstName] = React.useState(null);
+  const [lastName, setLastName] = React.useState(null);
+  const [fullName, setFullName] = React.useState(null);
+
+
+  const signInWithPhoneNumber = async () => {
     const fullnumber = '+970' + number;
-    auth()
-      .signInWithPhoneNumber(fullnumber)
-      .then(confirmResult => {
-        // Confirmation result is returned by the Firebase server.
-        navigation.navigate('signupmobileConfirm',{number:number})
-        console.log(confirmResult);
-      })
-      .catch(error => {
-        console.log(error);
+    try {
+      const confirmation = await auth().signInWithPhoneNumber(fullnumber);
+      setConfirmResult(confirmation);
+    } catch (error) {
+      console.log('Error', error.message);
+    }
+  };
+
+  const confirmCode = async () => {
+    try {
+      const userCredential = await confirmResult.confirm(verificationCode);
+      const user = userCredential.user;
+      await auth().signInWithPhoneNumber(user.phoneNumber);
+
+      await firestore().collection('Users').doc(user?.uid).set({
+        FullName: fullName,
+        Role: 'passenger',
+        PhoneNumber: number,
+        CurrentLocation: ''
       });
-  }
+
+      const querySnapshot = await firestore()
+        .collection('Drivers')
+        .where('phoneNumber', '==', phoneNumber)
+        .get();
+
+      if (!querySnapshot.empty) {
+        const driverDoc = querySnapshot.docs[0];
+        const driverData = driverDoc.data();
+        const street = driverData.street;
+        await firestore().collection('Users').doc(user?.uid).set({
+          FullName: fullName,
+          Role: 'driver',
+          PhoneNumber: number,
+          Street: street,
+          CurrentLocation: ''
+        });
+      } else {
+        await firestore().collection('Users').doc(user?.uid).set({
+          FullName: fullName,
+          Role: 'passenger',
+          PhoneNumber: number,
+          Street: '',
+          CurrentLocation: '',
+        });
+      }
+      navigation.navigate('BottomTabNavigator');
+    } catch (error) {
+      console.log('Error', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter your mobile number</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeNumber}
-          value={number}
-          placeholder="12345 67890"
-          maxLength={10}
-          keyboardType="numeric" />
-      </View>
-      <TouchableOpacity
-        style={styles.mainButton}
-        onPress={phoneSignUp}
-      >
-        <Text style={styles.buttonText}>Next</Text>
-      </TouchableOpacity>
+      {!confirmResult && !fullName && (
+        <>
+          <Text style={styles.title}>Enter your Full Name</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setFirstName}
+              value={firstName}
+              placeholder="first name"
+            />
+          </View>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setLastName}
+              value={lastName}
+              placeholder="last name"
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={() => setFullName(firstName + ' ' + lastName)}
+          >
+            <Text style={styles.buttonText}>confirm user</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {!confirmResult && fullName && (
+        <>
+          <Text style={styles.title}>Enter your mobile number</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              onChangeText={onChangeNumber}
+              value={number}
+              placeholder="12345 67890"
+              maxLength={10}
+              keyboardType="numeric" />
+          </View>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={signInWithPhoneNumber}
+          >
+            <Text style={styles.buttonText}>Next</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {confirmResult && fullName && (
+        <>
+          <Text style={styles.title}>Enter your sms code</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setVerificationCode}
+              value={verificationCode}
+              placeholder=""
+              maxLength={10}
+              keyboardType="numeric" />
+          </View>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={confirmCode}
+          >
+            <Text style={styles.buttonText}>Next</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 };
@@ -90,7 +180,7 @@ const styles = StyleSheet.create({
     borderColor: "#20232a",
     alignSelf: 'center',
     position: 'absolute',
-    bottom: '10%',
+    bottom: '20%',
   },
   buttonText: {
     fontSize: 30,

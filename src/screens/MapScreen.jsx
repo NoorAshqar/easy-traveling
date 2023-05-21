@@ -95,10 +95,6 @@ export default function MapScreen() {
             description={"This is my current location"}
           />
         )}
-        <Button
-          title={'Share My location'}
-          onPress={ShareMylocation}
-        />
       </MapView>
     </View>
   );
