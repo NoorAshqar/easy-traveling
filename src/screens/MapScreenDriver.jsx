@@ -40,7 +40,6 @@ export default function MapScreenDriver() {
    requestLocationPermission();
     Geolocation.getCurrentPosition(
       position => {
-        console.log(position);
         setCurrentPosition({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -58,7 +57,7 @@ export default function MapScreenDriver() {
       },
     );
   }, []);
-  
+
   const ShareMylocation = () => {
     // get the user's location every minute
     setTrackingOn(true);

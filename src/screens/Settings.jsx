@@ -11,8 +11,6 @@ function Settings({ navigation }) {
       try {
         const currentUser = auth().currentUser;
         const uid = currentUser.uid;
-        console.log(uid,"uid2")
-
         const userDoc = await firestore().collection('Users').doc(uid).get();
         if (userDoc.exists) {
           const userData = userDoc.data();
