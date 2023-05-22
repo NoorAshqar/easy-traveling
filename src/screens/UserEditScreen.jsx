@@ -6,7 +6,6 @@ import { Card, ListItem } from 'react-native-elements';
 
 const UserEditScreen = ({ route }) => {
   const user = route.params.user;
-  console.log(user);
   const [fullName, setFullName] = useState( user.fullName? user.fullName : '');
   const [phoneNumber, setPhoneNumber] = useState(user.PhoneNumber? user.PhoneNumber : '');
 

@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 
 export default function MapScreen() {
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [user, setUser] = useState(null);
+  const [userID, setUserID] = useState(null);
 
   async function requestLocationPermission() {
     try {
@@ -61,11 +61,9 @@ export default function MapScreen() {
       try {
         const currentUser = auth().currentUser;
         const uid = currentUser.uid;
-        console.log(uid,"uid")
         const userDoc = await firestore().collection('Users').doc(uid).get();
         if (userDoc.exists) {
-          const userData = userDoc.data();
-          setUser(uid);
+          setUserID(uid);
         } else {
           console.log('User not found');
         }
@@ -78,16 +76,15 @@ export default function MapScreen() {
   }, []);
 
   const shareMyLocation = () => {
-    if (user) {
-      const { uid } = user;
+    if (userID) {
+      
       Geolocation.getCurrentPosition(
         position => {
-          console.log(position);
           const { latitude, longitude } = position.coords;
-          firestore().collection('Users').doc(uid).update({
+          firestore().collection('Users').doc(userID).update({
             CurrentLocation: {
-              latitude : 1,
-              longitude : 2,
+              latitude : latitude,
+              longitude : longitude,
             },
           })
             .then(() => {
