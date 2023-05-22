@@ -3,11 +3,11 @@ import { SafeAreaView, StyleSheet, Text, FlatList, ScrollView, TouchableOpacity 
 import firestore from '@react-native-firebase/firestore';
 import { Card, ListItem } from 'react-native-elements';
 
-const DriverListScreen = (driver) => {
+const DriverListScreen = ({ navigation }) => {
   const [drivers, setDrivers] = useState([]);
 
-  const handleDriverDetails = () => {
-    navigation.navigate('DriverDetails', { driver: driver });
+  const handleDriverDetails = (driver) => {
+    navigation.navigate('DriverEdit',{driver: driver});
   };
 
   useEffect(() => {
@@ -35,12 +35,13 @@ const DriverListScreen = (driver) => {
       <ListItem key={index}>
         <ListItem.Content>
           <ListItem.Title>Name: {item.Name}</ListItem.Title>
+          <ListItem.Title>Phone Number: {item.PhoneNumber}</ListItem.Title>
           <ListItem.Title>Street: {item.Street}</ListItem.Title>
           <ListItem.Title>Production Date:: {item.ProductionDate}</ListItem.Title>
           <ListItem.Title>License expiration date: {item.LicenseExpirationDate}</ListItem.Title>
           <ListItem.Title>Vin No: {item.VinNo}</ListItem.Title>
           <ListItem.Title>Vehicle ID: {item.VehicleID}</ListItem.Title>
-          <TouchableOpacity onPress={handleDriverDetails(item)} style={{ position: 'absolute', top: 10, right: 10 }}>
+          <TouchableOpacity onPress={()=>{handleDriverDetails(item)}} style={{ position: 'absolute', top: 10, right: 10 }}>
             <Text style={{ color: 'red', fontSize: 20 }}>Edit</Text>
           </TouchableOpacity>
         </ListItem.Content>

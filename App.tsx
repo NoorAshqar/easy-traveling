@@ -9,8 +9,6 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 import Landing from './src/screens/landing';
 import SignUpMobile from './src/screens/signupmobile';
-import SignUpEmail from './src/screens/signupemail';
-import signupmobileConfirm from './src/screens/signupmobileConfirm';
 import Unauthorized from './src/components/Unauthorized';
 import BottomTabNavigator from './src/components/BottomTabNavigator';
 import auth from '@react-native-firebase/auth';

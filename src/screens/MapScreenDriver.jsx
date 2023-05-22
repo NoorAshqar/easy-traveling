@@ -3,7 +3,8 @@ import { StyleSheet, Text, View,TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
-import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export default function MapScreenDriver() {
 
@@ -35,28 +36,29 @@ export default function MapScreenDriver() {
 
   
 
-  // useEffect(() => {
-  //  requestLocationPermission();
-  //   Geolocation.getCurrentPosition(
-  //     position => {
-  //       console.log(position);
-  //       setCurrentPosition({
-  //         latitude: position.coords.latitude,
-  //         longitude: position.coords.longitude,
-  //         latitudeDelta: 0.0922,
-  //         longitudeDelta: 0.0421,
-  //       });
-  //     },
-  //     error => {
-  //       console.log(error);
-  //     },
-  //     {
-  //       enableHighAccuracy: true,
-  //       timeout: 15000,
-  //       maximumAge: 10000,
-  //     },
-  //   );
-  // }, []);
+  useEffect(() => {
+   requestLocationPermission();
+    Geolocation.getCurrentPosition(
+      position => {
+        console.log(position);
+        setCurrentPosition({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+      },
+    );
+  }, []);
+  
   const ShareMylocation = () => {
     // get the user's location every minute
     setTrackingOn(true);

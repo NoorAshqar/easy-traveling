@@ -1,25 +1,46 @@
-import React, {useEffect, useState} from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import React, { useEffect, useState } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import MapScreen from '../screens/MapScreen';
 import MapScreenDriver from '../screens/MapScreenDriver';
 import Settings from '../screens/Settings';
 import AdminConsole from '../screens/AdminConsole';
+import DriverEditScreen from '../screens/DriverEditScreen';
+import UserEditScreen from '../screens/UserEditScreen';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-function BottomTabNavigator() {
+const BottomTabNavigator = () => {
+ 
+
+  const Tab = createBottomTabNavigator();
+  const Stack = createStackNavigator();
+
+  return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DriverEdit"
+          component={DriverEditScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="UserEditScreen"
+          component={UserEditScreen}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+  );
+};
+
+const TabNavigator = () => {
   const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
@@ -43,25 +64,34 @@ function BottomTabNavigator() {
 
     fetchUserRole();
   }, []);
-
   const Tab = createBottomTabNavigator();
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: 'black',
-  };
 
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       {userRole === 'Driver' ? (
-        <Tab.Screen name="Map" component={MapScreenDriver} />
+        <Tab.Screen name="Map" options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+        }} component={MapScreenDriver} />
       ) : (
-        <Tab.Screen name="Map" component={MapScreen} />
+        <Tab.Screen name="Map" options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+        }} component={MapScreen} />
       )}
       <Tab.Screen name="Settings" component={Settings} />
-      {userRole === 'Admin' && <Tab.Screen name="AdminConsole" component={AdminConsole} />}
+      {userRole === 'Admin' && (
+        <Tab.Screen name="AdminConsole" component={AdminConsole} />
+      )}
     </Tab.Navigator>
   );
-}
+};
 
 export default BottomTabNavigator;
