@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Text, View, StyleSheet } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { Picker } from '@react-native-picker/picker';
 
 function Settings({ navigation }) {
   const [user, setUser] = useState(null);
@@ -35,7 +36,7 @@ function Settings({ navigation }) {
       {user && (
         <View style={styles.userInfoContainer}>
           <Text style={styles.userInfoText}>User Information:</Text>
-          <Text style={styles.userInfoText}>Name: {user.fullName}</Text>
+          <Text style={styles.userInfoText}>Name: {user.FullName}</Text>
           <Text style={styles.userInfoText}>PhoneNumber: {user.PhoneNumber}</Text>
           {user.Role === "Admin" && (
             <Text style={styles.userInfoText}>you are an admin</Text>

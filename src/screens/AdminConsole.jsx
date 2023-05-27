@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { Card, ListItem } from 'react-native-elements';
+import LoadingPopup from "../components/LoadingPopup";
 
 const DriverListScreen = ({ navigation }) => {
   const [drivers, setDrivers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDriverDetails = (driver) => {
     navigation.navigate('DriverEdit',{driver: driver});
   };
 
   useEffect(() => {
+    setIsLoading(true)
     const fetchDrivers = async () => {
       try {
         const querySnapshot = await firestore().collection('Drivers').get();
@@ -21,9 +24,10 @@ const DriverListScreen = ({ navigation }) => {
         });
 
         setDrivers(driverData);
-
+        setIsLoading(false)
       } catch (error) {
         console.log('Error', error.message);
+        setIsLoading(false)
       }
     };
 
@@ -57,6 +61,7 @@ const DriverListScreen = ({ navigation }) => {
         renderItem={renderDriverItem}
         keyExtractor={(item) => item.VehicleID}
       />
+      <LoadingPopup isVisible={isLoading} />
     </SafeAreaView>
   );
 };

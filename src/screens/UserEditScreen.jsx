@@ -2,15 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { View, TextInput, Button, StyleSheet,Text } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { Card, ListItem } from 'react-native-elements';
+import auth from '@react-native-firebase/auth';
 
 
-const UserEditScreen = ({ route }) => {
+const UserEditScreen = ({ route,navigation }) => {
   const user = route.params.user;
-  const [fullName, setFullName] = useState( user.fullName? user.fullName : '');
+  const [fullName, setFullName] = useState( user.FullName? user.FullName : '');
   const [phoneNumber, setPhoneNumber] = useState(user.PhoneNumber? user.PhoneNumber : '');
 
   const handleUpdateDriver = () => {
-    // Perform the update logic using the entered data
+    const currentUser = auth().currentUser;
+    const uid = currentUser.uid;
+    firestore().collection('Users').doc(uid).update({
+      FullName:fullName,
+      PhoneNumber:phoneNumber
+    })
+      .then(() => {
+        console.log('User updated successfully');
+      })
+      .catch(error => {
+        console.log('Error updating user:', error);
+      })
+      .finally(() => {
+        navigation.navigate('Settings');
+      });
   };
 
   return (

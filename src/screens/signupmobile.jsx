@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import ReactFlagsSelect from "react-flags-select";
 import firestore from '@react-native-firebase/firestore';
+import LoadingPopup from "../components/LoadingPopup";
 
 
 const SignUpMobile = () => {
@@ -13,20 +14,25 @@ const SignUpMobile = () => {
   const [firstName, setFirstName] = React.useState(null);
   const [lastName, setLastName] = React.useState(null);
   const [fullName, setFullName] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
 
   const signInWithPhoneNumber = async () => {
+    setIsLoading(true)
     const fullnumber = '+970' + number;
     try {
       const confirmation = await auth().signInWithPhoneNumber(fullnumber);
       setConfirmResult(confirmation);
+      setIsLoading(false)
     } catch (error) {
+      setIsLoading(false)
       console.log('Error', error.message);
     }
   };
 
   const confirmCode = async () => {
     try {
+      setIsLoading(true)
       const userCredential = await confirmResult.confirm(verificationCode);
       const user = userCredential.user;
       await auth().signInWithPhoneNumber(user.phoneNumber);
@@ -63,8 +69,10 @@ const SignUpMobile = () => {
           CurrentLocation: '',
         });
       }
+      setIsLoading(false)
       navigation.navigate('BottomTabNavigator');
     } catch (error) {
+      setIsLoading(false)
       console.log('Error', error.message);
     }
   };
@@ -138,6 +146,7 @@ const SignUpMobile = () => {
           </TouchableOpacity>
         </>
       )}
+      <LoadingPopup isVisible={isLoading} />
     </View>
   );
 };
