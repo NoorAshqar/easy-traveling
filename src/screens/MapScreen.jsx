@@ -88,7 +88,7 @@ export default function MapScreen() {
     const fetchStreets = async () => {
       try {
         const snapshot = await firestore().collection('Users').get();
-        const streetsData = [...new Set(snapshot.docs.map(doc => doc.data().street).filter(street => street !== ''))];
+        const streetsData = [...new Set(snapshot.docs.map(doc => doc.data().Street).filter(Street => Street !== ''))];
         setStreets(streetsData);
       } catch (error) {
         console.log('Error fetching streets:', error);
@@ -157,8 +157,10 @@ export default function MapScreen() {
     try {
       const snapshot = await firestore()
         .collection('Users')
-        .where('street', '==', street)
+        .where('Street', '==', street)
         .where('Role', '==', 'driver')
+        .where('CurrentLocation.latitude', '!=', 0)
+        .where('CurrentLocation.longitude', '!=', 0)
         .get();
 
       const markers = snapshot.docs.map(doc =>
@@ -171,7 +173,7 @@ export default function MapScreen() {
         Passengers: doc.data().Passengers,
         FullName: doc.data().FullName,
         PhoneNumber: doc.data().PhoneNumber,
-        cost: doc.data().cost,
+        Cost: doc.data().Cost,
 
       }));
       setDriverMarkers(markers);
@@ -224,13 +226,13 @@ export default function MapScreen() {
               key={marker.id}
               coordinate={marker.location}
               title={marker.FullName}
-              description={marker.cost + ""}
+              description={marker.Cost + ""}
               onPress={() => {
                 setSelectedDriver(
                   [
                     marker.FullName,
                     marker.PhoneNumber,
-                    marker.cost,
+                    marker.Cost,
                     marker.Passengers
                   ]
                 )

@@ -95,7 +95,7 @@ const TabNavigator = () => {
         }}
         component={HomeScreen}
       />
-      {userRole === 'Driver' ? (
+      {userRole === 'driver' ? (
         <Tab.Screen
           name="Map"
           options={{

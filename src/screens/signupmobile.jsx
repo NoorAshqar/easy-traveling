@@ -37,28 +37,29 @@ const SignUpMobile = () => {
       const user = userCredential.user;
       await auth().signInWithPhoneNumber(user.phoneNumber);
 
-      await firestore().collection('Users').doc(user?.uid).set({
-        FullName: fullName,
-        Role: 'passenger',
-        PhoneNumber: number,
-        CurrentLocation: ''
-      });
-
       const querySnapshot = await firestore()
         .collection('Drivers')
-        .where('phoneNumber', '==', phoneNumber)
+        .where('PhoneNumber', '==', number)
         .get();
 
       if (!querySnapshot.empty) {
         const driverDoc = querySnapshot.docs[0];
         const driverData = driverDoc.data();
-        const street = driverData.street;
+        console.log(driverData,"driverData");
+        const street = driverData.Street;
+        const Cost = driverData.Cost;
         await firestore().collection('Users').doc(user?.uid).set({
           FullName: fullName,
           Role: 'driver',
           PhoneNumber: number,
           Street: street,
-          CurrentLocation: ''
+          CurrentLocation: {
+            latitude:0,
+            longitude:0
+          },
+          PhoneNumber: number,
+          Cost: Cost,
+          Passengers: '',
         });
       } else {
         await firestore().collection('Users').doc(user?.uid).set({
