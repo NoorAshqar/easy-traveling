@@ -11,6 +11,8 @@ import Landing from '../screens/landing';
 import SignUpMobile from '../screens/signupmobile';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import DriverEditScreen from '../screens/DriverEditScreen';
+import AddDriver from '../screens/AddDriver';
+
 
 
 import {
@@ -72,6 +74,16 @@ function Unauthorized(): JSX.Element {
       <Stack.Screen
         name="DriverEditScreen"
         component={DriverEditScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: 'black',
+          },
+          headerTintColor: 'white',
+        }} />
+      <Stack.Screen
+        name="AddDriver"
+        component={AddDriver}
         options={{
           title: "",
           headerStyle: {

@@ -15,6 +15,9 @@ const SignUpMobile = () => {
   const [lastName, setLastName] = React.useState(null);
   const [fullName, setFullName] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [driverMode, setDriverMode] = React.useState(false);
+
+
 
 
   const signInWithPhoneNumber = async () => {
@@ -45,7 +48,7 @@ const SignUpMobile = () => {
       if (!querySnapshot.empty) {
         const driverDoc = querySnapshot.docs[0];
         const driverData = driverDoc.data();
-        console.log(driverData,"driverData");
+        console.log(driverData, "driverData");
         const street = driverData.Street;
         const Cost = driverData.Cost;
         await firestore().collection('Users').doc(user?.uid).set({
@@ -54,24 +57,44 @@ const SignUpMobile = () => {
           PhoneNumber: number,
           Street: street,
           CurrentLocation: {
-            latitude:0,
-            longitude:0
+            latitude: 0,
+            longitude: 0
           },
-          PhoneNumber: number,
           Cost: Cost,
           Passengers: '',
         });
-      } else {
+      }
+      else if (driverMode) {
+        await firestore().collection('Users').doc(user?.uid).set({
+          FullName: fullName,
+          Role: 'confirmDriver',
+          PhoneNumber: number,
+          Street: '',
+          CurrentLocation: {
+            latitude: 0,
+            longitude: 0
+          },
+        });
+      }
+      else {
         await firestore().collection('Users').doc(user?.uid).set({
           FullName: fullName,
           Role: 'passenger',
           PhoneNumber: number,
           Street: '',
-          CurrentLocation: '',
+          CurrentLocation: {
+            latitude: 0,
+            longitude: 0
+          },
         });
       }
       setIsLoading(false)
-      navigation.navigate('BottomTabNavigator');
+      if(driverMode){
+        navigation.navigate('landing');
+      }
+      else {
+        navigation.navigate('BottomTabNavigator');
+      }
     } catch (error) {
       setIsLoading(false)
       console.log('Error', error.message);
@@ -82,13 +105,14 @@ const SignUpMobile = () => {
     <View style={styles.container}>
       {!confirmResult && !fullName && (
         <>
-          <Text style={styles.title}>Enter your Full Name</Text>
+          
+          <Text style={styles.title}>أدخل اسمك الكامل</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
               onChangeText={setFirstName}
               value={firstName}
-              placeholder="first name"
+              placeholder="الاسم الأول"
             />
           </View>
           <View style={styles.inputWrapper}>
@@ -96,26 +120,37 @@ const SignUpMobile = () => {
               style={styles.input}
               onChangeText={setLastName}
               value={lastName}
-              placeholder="last name"
+              placeholder="اسم العائلة"
             />
           </View>
+          {!driverMode && (
+            <TouchableOpacity
+              onPress={() => {
+                setDriverMode(true);
+              }}
+            >
+              <Text style={styles.title}>اضغط هنا للتجيل الدخول كسائق</Text>
+            </TouchableOpacity>
+          )}
+
+
           <TouchableOpacity
             style={styles.mainButton}
             onPress={() => setFullName(firstName + ' ' + lastName)}
           >
-            <Text style={styles.buttonText}>confirm user</Text>
+            <Text style={styles.buttonText}>تأكيد المستخدم</Text>
           </TouchableOpacity>
         </>
       )}
       {!confirmResult && fullName && (
         <>
-          <Text style={styles.title}>Enter your mobile number</Text>
+          <Text style={styles.title}>أدخل رقم هاتفك المحمول</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
               onChangeText={onChangeNumber}
               value={number}
-              placeholder="12345 67890"
+              placeholder="رقم هاتفك"
               maxLength={10}
               keyboardType="numeric" />
           </View>
@@ -123,13 +158,13 @@ const SignUpMobile = () => {
             style={styles.mainButton}
             onPress={signInWithPhoneNumber}
           >
-            <Text style={styles.buttonText}>Next</Text>
+            <Text style={styles.buttonText}>التالي</Text>
           </TouchableOpacity>
         </>
       )}
       {confirmResult && fullName && (
         <>
-          <Text style={styles.title}>Enter your sms code</Text>
+          <Text style={styles.title}>أدخل رمز SMS الخاص بك</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
@@ -143,7 +178,7 @@ const SignUpMobile = () => {
             style={styles.mainButton}
             onPress={confirmCode}
           >
-            <Text style={styles.buttonText}>Next</Text>
+            <Text style={styles.buttonText}>التالي</Text>
           </TouchableOpacity>
         </>
       )}
@@ -189,8 +224,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: "#20232a",
     alignSelf: 'center',
-    position: 'absolute',
-    bottom: '20%',
+    position: 'relative',
+    top: '10%',
   },
   buttonText: {
     fontSize: 30,

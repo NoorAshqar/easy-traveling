@@ -35,11 +35,11 @@ function Settings({ navigation }) {
     <View style={styles.container}>
       {user && (
         <View style={styles.userInfoContainer}>
-          <Text style={styles.userInfoText}>User Information:</Text>
-          <Text style={styles.userInfoText}>Name: {user.FullName}</Text>
-          <Text style={styles.userInfoText}>PhoneNumber: {user.PhoneNumber}</Text>
+          <Text style={styles.userInfoText}>معلومات المستخدم:</Text>
+          <Text style={styles.userInfoText}>الاسم: {user.FullName}</Text>
+          <Text style={styles.userInfoText}>رقم الهاتف: {user.PhoneNumber}</Text>
           {user.Role === "Admin" && (
-            <Text style={styles.userInfoText}>you are an admin</Text>
+            <Text style={styles.userInfoText}>أنت مسؤول</Text>
           )}
           <Button title="Edit" onPress={handleEdit} />
         </View>

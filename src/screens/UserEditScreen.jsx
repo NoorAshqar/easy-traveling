@@ -24,7 +24,7 @@ const UserEditScreen = ({ route,navigation }) => {
         console.log('Error updating user:', error);
       })
       .finally(() => {
-        navigation.navigate('Settings');
+        navigation.goBack();
       });
   };
 

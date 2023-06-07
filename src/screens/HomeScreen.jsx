@@ -2,7 +2,7 @@ import React from 'react';
 import { View, FlatList, StyleSheet, Text, Image } from 'react-native';
 
 const fakePosts = [
-  { id: '1', title: 'Post 1', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', image: require('../img/taxi.png') },
+  { id: '1', title: 'اهلا وسهلا في تطبيق easy-traveling', content: 'اهلا وسهلا في تطبيق easy-traveling', image: require('../img/taxi.png') },
   { id: '2', title: 'Post 2', content: 'Nulla euismod dui nec consectetur tristique.', image: require('../img/taxi.png') },
   { id: '3', title: 'Post 3', content: 'Aenean at odio luctus, semper tortor eu, posuere lacus.', image: require('../img/taxi.png') },
   // Add more fake posts as needed

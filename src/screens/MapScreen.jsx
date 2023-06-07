@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, Text, View, Button, Image,Animated  } from "react-native";
+
 import MapView, { Marker } from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
@@ -250,23 +251,23 @@ export default function MapScreen() {
         </MapView>
       </View>
       <View style={styles.driverDataContainer}>
-        <Button title="Share My Location" onPress={shareMyLocation} />
+        <Button title={selectedStreet? 'انشر موقعك للسائق' : 'اختر شارع اولا'} disabled={!selectedStreet} onPress={shareMyLocation} />
         {selectedDriver.length > 0 && (
           <Animated.View style={{ opacity: fadeAnim }}>
             <View style={styles.driverDataRow}>
-              <Text style={styles.label}>Driver Name:</Text>
+              <Text style={styles.label}>اسم السائق:</Text>
               <Text style={styles.driverDataText}>{selectedDriver[0]}</Text>
             </View>
             <View style={styles.driverDataRow}>
-              <Text style={styles.label}>Driver Phone:</Text>
+              <Text style={styles.label}>هاتف السائق:</Text>
               <Text style={styles.driverDataText}>{selectedDriver[1]}</Text>
             </View>
             <View style={styles.driverDataRow}>
-              <Text style={styles.label}>Price:</Text>
+              <Text style={styles.label}>سعر:</Text>
               <Text style={styles.driverDataText}>{selectedDriver[2]}</Text>
             </View>
             <View style={styles.driverDataRow}>
-              <Text style={styles.label}>Passengers in:</Text>
+              <Text style={styles.label}>عدد الركاب:</Text>
               <Text style={styles.driverDataText}>{selectedDriver[3]}</Text>
             </View>
           </Animated.View>

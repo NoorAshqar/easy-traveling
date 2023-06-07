@@ -11,14 +11,14 @@ const Landing = ({navigation}) => {
           }}
           source={require("../img/taxi.png")}
         />
-        <Text style={styles.title}>welcome to <Text style={{ fontWeight: "bold" }}>easy traveling</Text>...your app for easy traveling</Text>
+        <Text style={styles.title}>مرحبًا بك في <Text style={{ fontWeight: "bold" }}>easy traveling</Text>...تطبيقك لسهولة التنقل والسفر</Text>
       </View>
       <View style={styles.containerBody}>
         <TouchableOpacity
           style={styles.mainButton}
           onPress={()=>{navigation.navigate('SignUpM')}}
         >
-          <Text style={styles.buttonText}>Lets Get Started</Text>
+          <Text style={styles.buttonText}>هيا بنا نبدأ</Text>
         </TouchableOpacity>
       </View>
     </View>

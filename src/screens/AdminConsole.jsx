@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, FlatList, ScrollView, TouchableOpacity, View, Button, } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { Card, ListItem } from 'react-native-elements';
 import LoadingPopup from "../components/LoadingPopup";
@@ -9,7 +9,7 @@ const DriverListScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDriverDetails = (driver) => {
-    navigation.navigate('DriverEdit',{driver: driver});
+    navigation.navigate('DriverEdit', { driver: driver });
   };
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const DriverListScreen = ({ navigation }) => {
           <ListItem.Title>License expiration date: {item.LicenseExpirationDate}</ListItem.Title>
           <ListItem.Title>Vin No: {item.VinNo}</ListItem.Title>
           <ListItem.Title>Vehicle ID: {item.VehicleID}</ListItem.Title>
-          <TouchableOpacity onPress={()=>{handleDriverDetails(item)}} style={{ position: 'absolute', top: 10, right: 10 }}>
+          <TouchableOpacity onPress={() => { handleDriverDetails(item) }} style={{ position: 'absolute', top: 10, right: 10 }}>
             <Text style={{ color: 'red', fontSize: 20 }}>Edit</Text>
           </TouchableOpacity>
         </ListItem.Content>
@@ -55,7 +55,12 @@ const DriverListScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, marginBottom: 20 }}>
-      <Text style={styles.title}>Driver List</Text>
+      <View style={styles.header}>
+        <Button title="اضافة سائق" onPress={() => {
+          navigation.navigate('AddDriver');
+        }} />
+        <Text style={styles.title}>قائمة السائقين</Text>
+      </View>
       <FlatList
         data={drivers}
         renderItem={renderDriverItem}
@@ -84,6 +89,13 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: 40,
     marginBottom: 40,
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+
   },
 });
 

@@ -1,29 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Button, StyleSheet,Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { Card, ListItem } from 'react-native-elements';
 
 
-const DriverEditScreen = ({ route }) => {
-  const driver = route.params.driver;
-  console.log(driver);
-  const [name, setName] = useState( driver.Name? driver.Name : '');
-  const [phoneNumber, setPhoneNumber] = useState(driver.PhoneNumber? driver.PhoneNumber : '');
-  const [street, setStreet] = useState(driver.Street? driver.Street : '');
-  const [prodDate, setProdDate] = useState(driver.ProductionDate? driver.ProductionDate : '');
-  const [licExpDate, setLicExpDate] = useState(driver.LicenseExpirationDate? driver.LicenseExpirationDate : '');
-  const [vinNo, setVinNo] = useState(driver.VinNo? driver.VinNo : '');
-  const [vehicleID, setVehicleID] = useState(driver.VehicleID? driver.VehicleID : '');
-  // useEffect(() => {
-  //   setName(initialName);
-  //   setAge(initialAge);
-  // }, [initialName, initialAge]);
-  
-  // Add more state variables for other fields you want to edit
+const AddDriver = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [street, setStreet] = useState('');
+  const [prodDate, setProdDate] = useState('');
+  const [licExpDate, setLicExpDate] = useState('');
+  const [vinNo, setVinNo] = useState('');
+  const [vehicleID, setVehicleID] = useState('');
+  const [cost, setCost] = useState('');
 
-  // Add a function to handle updating the driver data
-  const handleUpdateDriver = () => {
-    // Perform the update logic using the entered data
+  const addingDriver = async () => {
+    try {
+      const querySnapshot = await firestore()
+        .collection('Users')
+        .where('PhoneNumber', '==', phoneNumber)
+        .where('Role', '==', 'confirmDriver')
+        .get();
+
+      if (!querySnapshot.empty) {
+        const updatePromises = querySnapshot.docs.map((driverDoc) => {
+          const driverData = driverDoc.data();
+          const id = driverData.id;
+          return firestore().collection('Users').doc(id).update({
+            Role: 'driver',
+            Street: street,
+            Cost: cost,
+          });
+        });
+
+        await Promise.all(updatePromises);
+      }
+
+      await firestore().collection('Drivers').add({
+        Name: name,
+        PhoneNumber: phoneNumber,
+        Street: street,
+        ProductionDate: prodDate,
+        LicenseExpirationDate: licExpDate,
+        VinNo: vinNo,
+        VehicleID: vehicleID,
+        Cost: cost
+      });
+
+      console.log('User updated successfully');
+    } catch (error) {
+      console.log('Error updating user:', error);
+    } finally {
+      navigation.goBack();
+    }
   };
 
   return (
@@ -78,8 +107,17 @@ const DriverEditScreen = ({ route }) => {
         onChangeText={setVehicleID}
         placeholderTextColor="#999"
       />
-      
-      <Button title="Save" onPress={handleUpdateDriver} />
+      <TextInput
+        style={styles.input}
+        placeholder="Cost"
+        value={cost}
+        onChangeText={setCost}
+        placeholderTextColor="#999"
+      />
+
+      <Button title="Save"
+        disabled={!cost || !vehicleID || !vinNo || !licExpDate || !prodDate || !street || !phoneNumber || !name}
+        onPress={addingDriver} />
     </View>
   );
 };
@@ -122,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DriverEditScreen;
+export default AddDriver;

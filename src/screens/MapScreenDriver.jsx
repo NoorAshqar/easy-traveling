@@ -117,6 +117,8 @@ export default function MapScreenDriver() {
           setCurrentPosition({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
           });
           const { latitude, longitude } = position.coords;
           firestore().collection('Users').doc(userID).update({
@@ -194,7 +196,7 @@ export default function MapScreenDriver() {
           <Text style={styles.buttonText}>{trackingOn ? 'Stop Tracking' : 'Start Tracking'}</Text>
         </TouchableOpacity>
         <View style={styles.passengerCountContainer}>
-          <Text style={styles.buttonText}>Passengers</Text>
+          <Text style={styles.buttonText}>ركاب</Text>
           <TouchableOpacity
             onPress={decreasePassengerCount}
             style={[styles.button, styles.passengerButton]}
