@@ -129,7 +129,7 @@ const SignUpMobile = () => {
                 setDriverMode(true);
               }}
             >
-              <Text style={styles.title}>اضغط هنا للتجيل الدخول كسائق</Text>
+              <Text style={styles.title}>اضغط هنا للتسجيل الدخول كسائق</Text>
             </TouchableOpacity>
           )}
 
