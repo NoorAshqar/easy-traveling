@@ -1,21 +1,39 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Text, Image } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Image,TouchableOpacity,Linking } from 'react-native';
 
 const fakePosts = [
-  { id: '1', title: 'اهلا وسهلا في تطبيق easy-traveling', content: 'اهلا وسهلا في تطبيق easy-traveling', image: require('../img/taxi.png') },
-  { id: '2', title: 'Post 2', content: 'Nulla euismod dui nec consectetur tristique.', image: require('../img/taxi.png') },
-  { id: '3', title: 'Post 3', content: 'Aenean at odio luctus, semper tortor eu, posuere lacus.', image: require('../img/taxi.png') },
+  { id: '1', title: 'اهلا وسهلا في تطبيق easy-traveling', content: 'تطبيقك لتسهيل سفرك في مدينتك', image: require('../img/post1.jpg') },
+  { id: '2', title: 'اعثر على سيارة الاجرة المناسبة لك', content: 'من خلال الخريطة المتوفرة لك في التطبيق مع الشارع المناسب لك', image: require('../img/post2.jpg') },
+  { id: '3', title: 'تواصل معنا على الواتس اب ', content: 'Aenean at odio luctus, semper tortor eu, posuere lacus.', image: require('../img/post3.jpg') },
   // Add more fake posts as needed
 ];
 
 function HomeScreen() {
-  const renderPostCard = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={item.image} style={styles.image} />
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.content}>{item.content}</Text>
-    </View>
-  );
+  const renderPostCard = ({ item }) => {
+    if (item.id === '3') {
+      return (
+        <View style={styles.card}>
+          <Image source={item.image} style={styles.image} />
+          <Text style={styles.title}>{item.title}</Text>
+          <TouchableOpacity
+            style={styles.mainButton}
+            onPress={() => {
+              Linking.openURL('whatsapp://send?phone=+972569317219');
+            }}>
+            <Text style={styles.buttonText}>اضغط هنا للتواصل معنا</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  
+    return (
+      <View style={styles.card}>
+        <Image source={item.image} style={styles.image} />
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.content}>{item.content}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -61,6 +79,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black', // Set text color to black
   },
+  buttonText: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: "center",
+    padding: 20,
+  },
+  mainButton: {
+    backgroundColor: 'black',
+    textAlign: "center"
+  }
 });
 
 export default HomeScreen;

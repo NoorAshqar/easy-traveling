@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image, Animated } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
@@ -14,10 +14,12 @@ export default function MapScreenDriver() {
   const [trackingOn, setTrackingOn] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPassenger, setSelectedPassenger] = useState("");
   const [userID, setUserID] = useState(null);
   const [userStreet, setUserStreet] = useState(null);
   const [passengerMarkers, setPassengerMarkers] = useState([]);
   const [passengerCount, setPassengerCount] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   async function requestLocationPermission() {
     try {
@@ -101,13 +103,15 @@ export default function MapScreenDriver() {
               latitude: doc.data().CurrentLocation.latitude,
               longitude: doc.data().CurrentLocation.longitude,
             },
+            fullName: doc.data().FullName,
+            phoneNumber: doc.data().PhoneNumber,
           }));
         setPassengerMarkers(markers);
       });
 
     setIsLoading(false)
     return () => unsubscribe();
-  }, []);
+  }, [userStreet]);
 
   const ShareMylocation = () => {
     setTrackingOn(true);
@@ -154,15 +158,39 @@ export default function MapScreenDriver() {
 
   };
 
+  const handleRemovePassenger = (passengerId) => {
+    firestore().collection('Users').doc(passengerId).update({
+      Street: '',
+      CurrentLocation: {
+        latitude: 0,
+        longitude: 0,
+      },
+    })
+      .then(() => {
+        setSelectedPassenger("");
+        console.log('Passenger data updated successfully');
+      })
+      .catch(error => {
+        console.log('Error updating passenger data:', error);
+      });
+  };
   const decreasePassengerCount = () => {
     setPassengerCount(prevCount => (prevCount > 0 ? prevCount - 1 : prevCount));
 
   };
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: selectedPassenger ? 1 : 0, // Animate to 1 if selectedDriver is not null, otherwise 0
+      duration: 500, // Set the duration of the animation
+      useNativeDriver: true, // Enable native driver for better performance
+    }).start();
+  }, [selectedPassenger]);
   useEffect((() => {
     firestore().collection('Users').doc(userID).update({
       Passengers: passengerCount
     })
   }), [passengerCount])
+  const customMarkerIcon = require('../img/person.png');
 
   return (
     <View style={styles.container}>
@@ -170,6 +198,7 @@ export default function MapScreenDriver() {
         <MapView
           style={styles.map}
           region={currentPosition}
+          onPress={()=>{setSelectedPassenger("")}} 
         >
           {currentPosition && (
             <Marker
@@ -182,9 +211,20 @@ export default function MapScreenDriver() {
             <Marker
               key={marker.id}
               coordinate={marker.location}
-              title={"Passenger Location"}
-              description={"This is a passenger's location"}
-            />
+              title={marker.fullName + ''}
+              description={marker.phoneNumber + ''}
+              onPress={() => {
+                setSelectedPassenger(marker.id)
+              }}
+            >
+              <Image
+                source={customMarkerIcon}
+                style={{
+                  width: 50,
+                  height: 50,
+                }}
+              />
+            </Marker>
           ))}
         </MapView>
       </View>
@@ -211,6 +251,15 @@ export default function MapScreenDriver() {
             <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
+        {selectedPassenger && (
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <View style={styles.driverDataRow}>
+              <TouchableOpacity onPress={() => handleRemovePassenger(selectedPassenger)}>
+                <Text style={styles.removeText}>استلام</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        )}
       </View>
       <LoadingPopup isVisible={isLoading} />
     </View>
@@ -258,4 +307,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  removeText: {
+    color: 'white',
+    backgroundColor: 'red',
+    padding: 3,
+    textAlign: 'center'
+  }
 });

@@ -23,9 +23,11 @@ const AddDriver = ({ navigation }) => {
         .get();
 
       if (!querySnapshot.empty) {
+        console.log(querySnapshot,'querySnapshot');
         const updatePromises = querySnapshot.docs.map((driverDoc) => {
+          const id = driverDoc.id;
           const driverData = driverDoc.data();
-          const id = driverData.id;
+          console.log(driverData,"driverData")
           return firestore().collection('Users').doc(id).update({
             Role: 'driver',
             Street: street,
