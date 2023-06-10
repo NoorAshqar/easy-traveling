@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, View, Button, Image,Animated  } from "react-native";
+import { StyleSheet, Text, View, Button, Image, Animated } from "react-native";
 
 import MapView, { Marker } from "react-native-maps";
 import Geolocation from 'react-native-geolocation-service';
@@ -156,16 +156,22 @@ export default function MapScreen() {
 
   const fetchDriverLocations = async (street) => {
     try {
+      firestore().collection('Users').doc(userID).update({
+        Street:street,
+      })
+        .then(() => {
+          console.log('User location updated successfully');
+        })
+        .catch(error => {
+          console.log('Error updating user location:', error);
+        })
       const snapshot = await firestore()
         .collection('Users')
         .where('Street', '==', street)
         .where('Role', '==', 'driver')
-        .where('CurrentLocation.latitude', '!=', 0)
-        .where('CurrentLocation.longitude', '!=', 0)
         .get();
 
-      const markers = snapshot.docs.map(doc =>
-      ({
+      const markers = snapshot.docs.map(doc => ({
         id: doc.id,
         location: {
           latitude: doc.data().CurrentLocation.latitude,
@@ -175,19 +181,19 @@ export default function MapScreen() {
         FullName: doc.data().FullName,
         PhoneNumber: doc.data().PhoneNumber,
         Cost: doc.data().Cost,
-
       }));
+      console.log(markers,"markers")
       setDriverMarkers(markers);
+
       const newIntervalId = setInterval(() => {
         fetchDriverLocations(street);
       }, 60000); // Fetch every 1 minute
       setIntervalId(newIntervalId);
-
     } catch (error) {
       console.log('Error fetching driver locations:', error);
-    } finally {
     }
   };
+
   const customMarkerIcon = require('../img/bus-stop.png');
 
   return (
@@ -212,7 +218,7 @@ export default function MapScreen() {
         <MapView
           style={styles.map}
           region={currentPosition}
-          onPress={()=>{setSelectedDriver([])}} 
+          onPress={() => { setSelectedDriver([]) }}
         >
           {currentPosition && (
             <Marker
@@ -251,7 +257,7 @@ export default function MapScreen() {
         </MapView>
       </View>
       <View style={styles.driverDataContainer}>
-        <Button title={selectedStreet? 'انشر موقعك للسائق' : 'اختر شارع اولا'} disabled={!selectedStreet} onPress={shareMyLocation} />
+        <Button title={selectedStreet ? 'انشر موقعك للسائق' : 'اختر شارع اولا'} disabled={!selectedStreet} onPress={shareMyLocation} />
         {selectedDriver.length > 0 && (
           <Animated.View style={{ opacity: fadeAnim }}>
             <View style={styles.driverDataRow}>
